@@ -17,3 +17,6 @@ class Room(models.Model):
 
     def __str__(self):
         return f'{self.hotel.name} - {self.room_type}'
+
+class PhotoGallery(models.Model):
+    image=models.ImageField(upload_to='gallery/media/uploads/',blank=True,null=True)
