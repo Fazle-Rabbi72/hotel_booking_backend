@@ -13,7 +13,7 @@ class RoomViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def check_availability(self, request):
-        """ চেক করবে নির্দিষ্ট তারিখের মধ্যে কোনো রুম বুক করা হয়েছে কি না """
+        
         check_in_date_str = request.data.get('check_in_date')
         check_out_date_str = request.data.get('check_out_date')
 
@@ -29,14 +29,14 @@ class RoomViewSet(viewsets.ModelViewSet):
         except (ValueError, TypeError):
             return Response({"error": "Invalid date format. Use YYYY-MM-DD."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # বুকিং করা রুমগুলো খুঁজে বের করা হচ্ছে
+       
         booked_rooms = Booking.objects.filter(
             status='Confirmed',
             check_in_date__lt=check_out_date,
             check_out_date__gt=check_in_date
         ).values_list('room_id', flat=True)
 
-        # শুধুমাত্র available রুমগুলো দেখাবে
+       
         available_rooms = Room.objects.exclude(id__in=booked_rooms).filter(is_available=True)
 
         serializer = self.get_serializer(available_rooms, many=True)
@@ -44,7 +44,7 @@ class RoomViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def filter_by_room_type(self, request):
-        """ নির্দিষ্ট `room_type` অনুযায়ী এবং `available` রুম ফিল্টার """
+        
         room_type = request.query_params.get('room_type')
 
         if not room_type:
@@ -56,7 +56,7 @@ class RoomViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def filter_by_price(self, request):
-        """ নির্দিষ্ট `price_per_night` অনুযায়ী এবং `available` রুম ফিল্টার """
+        
         max_price = request.query_params.get('price_per_night')
 
         if not max_price:
@@ -67,7 +67,7 @@ class RoomViewSet(viewsets.ModelViewSet):
         except ValueError:
             return Response({"error": "Invalid max_price. It should be a number."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # `price_per_night` ফিল্টার করা হচ্ছে
+        
         rooms = Room.objects.filter(price_per_night__lte=max_price, is_available=True)
         
         if not rooms.exists():
@@ -79,7 +79,7 @@ class RoomViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def filter_by_availability(self, request):
-        """ শুধুমাত্র `available` রুম ফিল্টার """
+       
         rooms = Room.objects.filter(is_available=True)
         serializer = self.get_serializer(rooms, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
