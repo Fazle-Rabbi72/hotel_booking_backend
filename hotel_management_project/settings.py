@@ -28,13 +28,12 @@ DEBUG = True
 
 
 ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ['https://natures-paradise-stlb.onrender.com','https://*.127.0.0.1']
-
 AUTH_USER_MODEL = "user.User"
 
 CORS_ORIGIN_ALLOW_ALL = True
 
 CSRF_TRUSTED_ORIGINS = [
+    'https://natures-paradise-stlb.onrender.com',
     'http://127.0.0.1:8000',
     'http://localhost:3000',  
 ]
